@@ -1,4 +1,4 @@
-# x73-1045-RC
+# x73-10415-RC
 This site contains files to implement remote control between x73-10415 agent and manager.
 
 1.- Download the lpcxpresso ide from this website http://www.lpcware.com/lpcxpresso/download
