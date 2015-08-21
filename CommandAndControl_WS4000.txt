@@ -1,0 +1,451 @@
+WEIGHT SCALE EXAMPLE
+====================
+
+ASSOC|REQ: ASSOCIATE
+--------------------
+
+0xE2 0x00					APDU CHOICE Type (AarqApdu)
+0x00 0x32					CHOICE.length = 50
+0x80 0x00 0x00 0x00			assoc-version
+0x00 0x01 0x00 0x2A			data-proto-list.count = 1 | length = 42
+0x50 0x79 					data-proto-id = 20601
+0x00 0x26					data-proto-info length = 38
+0x80 0x00 0x00 0x00			protocol-version, This bit shall be set if IEEE Std 11073-20601a is supported
+0xA0 0x00					encoding-rules = MDER or PER
+0x80 0x00 0x00 0x00			nomenclature-version
+0x00 0x00 0x00 0x00			functional-units – e.g., flag ability to enter test association,at this case it is reserver for future use.
+0x00 0x80 0x00 0x00			system-type = sys-type-agent
+0x00 0x08           		system-id length = 8 and value
+0x88 0x77 0x66 0x55 0x44 0x33 0x22 0x11
+0x40 0x00					dev-config-id = extended-config-start (16384)
+0x00 0x81 0x01 0x01			data-req-mode-capab
+0x00 0x00 0x00 0x00			option-list.count = 0 | option-list.length = 0
+
+
+ASSOC|RSP: ASSOCIATE
+--------------------
+0xE3 0x00					APDU CHOICE Type (AareApdu)
+0x00 0x2C					CHOICE.length = L
+0x00 0x03					result = accepted-unknown-config
+0x50 0x79 					data-proto-id = 20601
+0x00 0x26					data-proto-info length = L
+0x80 0x00 0x00 0x00			protocol-version, This bit shall be set if IEEE Std 11073-20601a is supported
+0x80 0x00					encoding-rules = MDER
+0x80 0x00 0x00 0x00			nomenclature-version
+0x00 0x00 0x00 0x00			functional-units,at this case it is reserver for future use.
+0x80 0x00 0x00 0x00			system-type = sys-type-manager
+0x00 0x08					system-id length = 8 and value
+0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+0x00 0x00					manager's response in dev-config-id is always 0
+0x00 0x00 0x00 0x00			manager's response in data-req-mode-capab is always 0
+0x00 0x00 0x00 0x00			option-list.count = 0 | option-list.length = 0
+
+EVENT|REQ: CONFIG
+-----------------
+
+0xE7 0x00		    		APDU CHOICE Type (PrstApdu)
+0x00 0x5A		    		CHOICE.length = 90
+0x00 0x58		    		OCTET STRING.length = 88
+0x00 0x01		    		invoke-id = 0x0001 (start of DataApdu. MDER encoded.)
+0x01 0x01		    		CHOICE(Remote Operation Invoke | Confirmed Event Report)
+0x00 0x52		    		CHOICE.length = 82
+0x00 0x00		    		obj-handle = 0 (MDS object)
+0xFF 0xFF 0xFF 0xFF			event-time = agent does not have a RelativeTime clock 
+0x0D 0x1C		    		event-type = MDC_NOTI_CONFIG
+0x00 0x48		    		event-info.length = 72 (start of ConfigReport)
+0x40 0x00		    		dev-config-id = extended-config-start (16384)
+0x00 0x03		    		config-obj-list.count = 3 Measurement objects will be “announced”
+0x00 0x42		    		config-obj-list.length = 66
+0x00 0x06		    		obj-class = MDC_MOC_VMO_METRIC_NU
+0x00 0x01		    		obj-handle = 1 	(? 1st Measurement is body weight)
+0x00 0x04		    		attributes.count =4
+0x00 0x24		    		attributes.length = 36
+0x09 0x2F		    		attribute-id = MDC_ATTR_ID_TYPE
+0x00 0x04		    		attribute-value.length = 4
+0x00 0x02 0xE1 0x40			MDC_PART_SCADA | MDC_MASS_BODY_ACTUAL
+0x0A 0x46		    		attribute-id = MDC_ATTR_METRIC_SPEC_SMALL
+0x00 0x02		    		attribute-value.length = 2
+0xD0 0x40		    		intermittent, stored data, msmt aperiodic, agent init, measured
+0x09 0x96		    		attribute-id = MDC_ATTR_UNIT_CODE
+0x00 0x02		    		attribute-value.length = 2
+0x06 0xC3		    		MDC_DIM_KILO_G
+0x0A 0x55		    		attribute-id = MDC_ATTR_ATTRIBUTE_VAL_MAP
+0x00 0x0C		    		attribute-value.length = 12
+0x00 0x02		    		AttrValMap.count = 2
+0x00 0x08		    		AttrValMap.length = 8
+0x0A 0x56 0x00 0x04			MDC_ATTR_NU_VAL_OBS_SIMP | value length = 4
+0x09 0x90 0x00 0x08			MDC_ATTR_TIME_STAMP_ABS | value length = 8
+0x00 0x2B		    		obj-class = MDC_MOC_CNTRL_SCO(43)
+0x00 0x02					obj-handle = 2 (SCO object)
+0x00 0x01		    		attributes.count = 1
+0x00 0x06		    		attributes.length = 6
+0x09 0x76		    		attribute-id = MDC_ATTR_SCO_CAPAB(2422)
+0x00 0x02		    		attribute-value.length = 2
+0x00 0x00					sco-capability none
+0x00 0x18		    		obj-class = MDC_MOC_SCAN_UCFG_OP(24)
+0x00 0x03					obj-handle = 3 (Operating scanner object)
+0x00 0x00		    		attributes.count = 0
+0x00 0x00		    		attributes.length = 0
+
+
+EVENT|RSP: CONFIG
+-----------------
+
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x16					CHOICE.length = 22
+0x00 0x14					OCTET STRING.length = 20
+0x00 0x01					invoke-id = 0x0001 (start of DataApdu. MDER encoded.)
+0x02 0x01					CHOICE (Remote Operation Response | Confirmed Event Report)
+0x00 0x0E					CHOICE.length = 14
+0x00 0x00					obj-handle = 0 (MDS object)
+0xFF 0xFF 0xFF 0xFF			currentTime = manager doesn't support (i.e. not have a local counter)
+0x0D 0x1C					event-type = MDC_NOTI_CONFIG
+0x00 0x04					event-reply-info.length = 4
+0x40 0x00					ConfigReportRsp.config-report-id = 0x4000
+0x00 0x00					ConfigReportRsp.config-result = accepted-config
+
+
+EVENT|REQ: MDS DATA REPORT FIXED FORMAT
+---------------------------------------
+0xE7 0x00 					APDU CHOICE Type (PrstApdu)
+0x00 0x2A 					CHOICE.length = 42
+0x00 0x28 					OCTET STRING.length = 40
+0x00 0x02 					invoke-id = 0x0002
+0x01 0x01 					CHOICE(Remote Operation Invoke | Confirmed Event Report)
+0x00 0x22 					CHOICE.length = 34
+0x00 0x00 					obj-handle = 0 (MDS object)				//Secuencia de EventReportArgumentSimple pag 150 20601vUltima
+0xFF 0xFF 0xFF 0xFF 		event-time = mpt supported		//Secuencia de EventReportArgumentSimple pag 150 20601vUltima
+0x0D 0x1D 					event-type = MDC_NOTI_SCAN_REPORT_FIXED//Secuencia de EventReportArgumentSimple pag 150 20601vUltima
+0x00 0x18 					event-info.length = 24//Secuencia de EventReportArgumentSimple pag 150 20601vUltima//
+0xF0 0x00 					ScanReportInfoFixed.data-req-id = data-req-id-agent-initiated(61440)
+0x00 0x00 					ScanReportInfoFixed.scan-report-no = 0
+0x00 0x01 					ScanReportInfoFixed.obs-scan-fixed.count = 1
+0x00 0x10 					ScanReportInfoFixed.obs-scan-fixed.length = 16
+0x00 0x01 					ScanReportInfoFixed.obs-scan-fixed.value[0].obj-handle = 1
+0x00 0x0C 					ScanReportInfoFixed.obs-scan-fixed.value[0]. obs-val-data.length = 12
+0xFF 0x00 0x02 0xFA 		Simple-Nu-Observed-Value = 76.2 (kg)
+0x20 0x07 0x12 0x06 		Absolute-Time-Stamp = 2007-12-06T12:10:0000
+0x12 0x10 0x00 0x00
+
+
+EVENT|RSP: MDS DATA REPORT FIXED FORMAT
+---------------------------------------
+0xE7 0x00 					APDU CHOICE Type (PrstApdu)
+0x00 0x12					CHOICE.length = 18
+0x00 0x10 					OCTET STRING.length = 16
+0x00 0x02 					invoke-id = 0x0002 (mirrored from invocation)
+0x02 0x01 					CHOICE(Remote Operation Response | Confirmed Event Report)
+0x00 0x0A 					CHOICE.length = 10
+0x00 0x00 					obj-handle = 0 (MDS object)
+0xFF 0xFF 0xFF 0xFF 		currentTime = manager doesn't support it
+0x0D 0x1D 					event-type = MDC_NOTI_SCAN_REPORT_FIXED
+0x00 0x00 					event-reply-info.length = 0
+
+
+SET|REQ: OPERATING SCANNER (OPERATIONAL STATE=ON)
+-----------------------------------------------
+0xE7 0x00 					Type (PrstApdu)
+0x00 0x16 					CHOICE.length = 22
+0x00 0x14 					OCTET STRING.length = 20
+0x00 0x03 					invoke-id = 0x0001	// invoke-id at manager
+0x01 0x05					CHOICE(Remote Operation Invoke |SET)
+0x00 0x0E 					CHOICE.length = 14
+0x00 0x03		    		obj-handle = 3 (Operating Scanner object)--Esto salio de la pagina 212
+0x00 0x01  					modification-list.count=1				 --Esto salio de la pagina 212
+0x00 0x08					modification-list.length=8				 --Esto salio de la pagina 212
+0x00 0x00					modification-list[0].modify-operator=replace(0)			   	 --Esto salio de la pagina 
+0x09 0x53					modification-list[0].identifier=MDC_ATTR_OP_STAT(2387)
+0x00 0x02					modification-list[0].ANY_DEFINED_BY.size=2
+0x00 0x01					modification-list[0].ANY_DEFINED_BY.Operational-State=enabled(1) 			 --Esto salio de la pagina 212
+
+
+SET|RSP: OPERATING SCANNER
+--------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x12 					CHOICE.length = 18
+0x00 0x10 					OCTET STRING.length = 16
+0x00 0x03 					invoke-id = 0x0001
+0x02 0x05					CHOICE(Remote Operation Response |SET)	
+0x00 0x0C 					CHOICE.length = 12
+0x00 0x03		    		obj-handle = 3 (Operating Scanner object)--Esto salio de la pagina 212
+0x00 0x01 					attribute-list.count=1
+0x00 0x06					attribute-list.length=6
+0x09 0x53					attribute-list[0].identifier=MDC_ATTR_OP_STAT(2387)
+0x00 0x02					attribute-list[0].ANY_DEFINED_BY.size=MDC_ATTR_OP_STAT(2387)
+0x00 0x01					attribute-list[0].ANY_DEFINED_BY.Operational-State=enabled(1)
+
+****************************************************************************************************
+EVENT|REQ: OPERATING SCANNER CREATE  
+----------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x56 					CHOICE.length = 86
+0x00 0x54 					OCTET STRING.length = 84
+0x00 0x04 					invoke-id = 0x0003
+0x01 0x01 					CHOICE(Remote Operation Invoke | Confirmed Event Report)
+0x00 0x4E 					CHOICE.length = 78
+0x00 0x03					obj-handle = 3 (Operating Scanner object)
+0x00 0x00 0x00 0x00 		event-time = 0
+0x0D 0x1D 					event-type = MDC_NOTI_OP_CREAT
+0x00 0x44	  	     		event-info.length = 68
+0X00 0x02					scan-report-no= 2
+0X00 0X01					ScanReportInfo.count=1  //scan-info SEQUENCE OF OpCreateEntry
+0X00 0x3E				    ScanReportInfo.length=62	//scan-info SEQUENCE OF OpCreateEntry		
+0x00 0x00					context-id = 0
+0x00 0x03					Handle SCO =03
+0x00 0x01					count = 1
+0x00 0x36					length = 54
+0x00 0x2d					op-class-id = MDC_MOC_CNTRL_OP_SEL_IT
+0x00 0x01					op-instance-no = 1 
+0x00 0x2C					obj-class = MDC_MOC_CNTRL_OP
+0x00 0x03					attribute-list.count = 4
+0x00 0x2C					attribute-list.length = 44
+0x09 0x52					attribute-id = MDC_ATTR_OP_SPEC
+0x00 0x0C		    		attribute-value.length = 12				
+0x00 0x00       			vattr-id. Check 10101 -- B.6 -- Currently no attr defined
+0x00 0x00 					op-target
+0x40 0x00 				    options = supports-default(1), 
+0x20 0x00 					level	= op-level-professional(2),
+0x00 0x00					group  = 0
+0x00 0x00					priority =0					
+0x09 0x53					attribute-id = MDC_ATTR_OP_STAT
+0x00 0x02		    		attribute-value.length = 2
+0x00 0x01					enable
+0x09 0x32					attribute-id = MDC_ATTR_INDEX_SEL(2354)
+0x00 0x02					attribute-value.length = 2
+0x00 0x00					First element is selected
+0x09 0x36					attribute-id = MDC_ATTR_LIST_SEL(2358)
+0x00 0x0C					attribute-value.length = 12
+0x00 0x01					CHOICE = oid-list[1]
+0x00 0x08					CHOICE.length
+0x00 0x02					oid-list.count
+0x00 0x04					oid-list.size
+0x06 0xC3					MDC_DIM_KILO_G(1731)
+0x06 0xE0					MDC_DIM_LB(1760)
+
+EVENT|RSP: OPER CREATE 
+----------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x12 					CHOICE.length = 18
+0x00 0x10 					OCTET STRING.length = 16
+0x00 0x04 					invoke-id = 0x0003 (mirrored from invocation)
+0x02 0x01 					CHOICE(Remote Operation Response | Confirmed Event Report)
+0x00 0x0A 					CHOICE.length = 10
+0x00 0x03 					obj-handle = 3 (Operating Scanner object)
+0xFF 0xFF 0xFF 0xFF 		event-time not supported
+0x0D 0x1D 					event-type = MDC_NOTI_OP_CREAT
+0x00 0x00 					event-reply-info.length = 0
+
+ACTION|REQ: OPERATION INVOKE 
+----------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x26					CHOICE.length = 38
+0x00 0x24					OCTET STRING.length = 36
+0x00 0x05					invoke-id = 0x0002 (start of DataApdu. MDER encoded.)
+0x01 0x07					CHOICE(Remote Operation Invoke | Confirmed Action)
+0x00 0x1E					CHOICE.length = 30
+0x00 0x03					obj-handle = 3 (SCO  object)
+0x0C 0x0B  					action-type = MDC_ACT_SCO_OP_INVOKE pagina 157 y 232
+0x00 0x18		            action-info-args.length = 24
+0x00 0x00					checksum = not-used(0)
+0xFF 0x33 0x44 0x55			invoke-cookie(should be random)
+0x00 0x01					op-invoke-list.count
+0x00 0x0C					op-invoke-list.size = 12
+0x00 0x2d					op-class-id = MDC_MOC_CNTRL_OP_SEL_IT
+0x00 0x01					op-instance-no = 1
+0x00 0x00					op-mod-type->op-replace(0)
+0x09 0x32					attribute-id = MDC_ATTR_INDEX_SEL(2354)
+0x00 0x02					attribute-value.length = 2
+0x00 0x01					Second element is selected (MDC_DIM_LB)
+
+ACTION|RSP: OPERATION INVOKE RESULT (por finalizar)
+-----------------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x14 					CHOICE.length = 20
+0x00 0x12 					OCTET STRING.length = 18
+0x00 0x05					invoke-id = 0x0002 (start of DataApdu. MDER encoded.)
+0x02 0x07					CHOICE(Remote Operation Response | Confirmed Action)
+0x00 0x0C					CHOICE.length = 12
+0x00 0x00					obj-handle = 3 (SCO  object)
+0x0C 0x0B  					action-type = MDC_ACT_SCO_OP_INVOKE pagina 157 y 232
+0x00 0x06		            action-info-args.length = 6
+0xFF 0x33 0x44 0x55			invoke-cookie
+0x00 0x00					OpInvResult= op-successful(0), 
+
+
+EVENT|REQ: OPERATION ATTRIBUTE UPDATE
+--------------------------------
+
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x38 					CHOICE.length = 56
+0x00 0x36 					OCTET STRING.length = 54
+0x00 0x04 					invoke-id = 0x0004
+0x01 0x01 					CHOICE(Remote Operation Invoke | Confirmed Event Report)
+0x00 0x30 					CHOICE.length = 48
+0x00 0x03 					obj-handle = 3 (Operating Scanner)
+0x00 0x00 0x00 0x00 		event-time = 0
+0x0D 0x0B 					event-type = MDC_NOTI_OP_ATTR_UPDT(3339) (ASN.1 data type = OpAttributeInfo)
+0x00 0x26		  	     	event-info.length = 38 
+0x00 0x03					scan-report-no = 3
+0x00 0x01					list.count = 1
+0x00 0x20					list.length = 32
+0x00 0x00					context-id ->MdsContext=0 (The same as above)
+0x00 0x01					list.count = 1
+0x00 0x1A					list.length = 26
+0x00 0x03					sco-handle=3
+0xFF 0x33 0x44 0x55		   	invoke-cookie->INT-U32,
+0x00 0x01					lock-state->AdministrativeState,
+0x00 0x01					op-elem-attr-up-list.count = 1
+0x00 0x0E					op-elem-attr-up-list.length = 14
+0x00 0x2D 					op-class-id= MDC_MOC_CNTRL_OP_SEL_IT(45)
+0x00 0x01  					op-instance-no->InstNumber, 
+0x00 0x04	    			attributes.count = 1
+0x00 0x0C	    			attributes.length = 6
+0X09 0X32					attribute-id = MDC_ATTR_INDEX_SEL
+0x00 0x02	    			attribute-value.length = 2
+0x00 0x01					Selected-Item-Index=1
+
+EVENT|RSP: OPERATION ATTRIBUTE UPDATE
+--------------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x10 					CHOICE.length = 16
+0x00 0x0E 					OCTET STRING.length = 14
+0x00 0x04 					invoke-id = 0x0004
+0x01 0x01 					CHOICE(Remote Operation Response | Confirmed Event Report)
+0x00 0x08 					CHOICE.length = 8
+0x00 0x03 					obj-handle = 3 (Operating Scanner)
+0x00 0x00 0x00 0x00 		event-time = 0
+0x0D 0x0B 					event-type = MDC_NOTI_OP_ATTR_UPDT 
+0x00 0x00		  	     	event-info.length = 0
+
+
+GET|REQ: MDS ALL ATTRIBUTES
+---------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x0E 					CHOICE.length = 14
+0x00 0x0C 					OCTET STRING.length = 12
+0x00 0x07					invoke-id = 0x0003 
+0x00 0x03					CHOICE(Remote Operation Invoke|Get)
+0x00 0x06					CHOICE.length = 6
+0x00 0x00					handle = 0 (MDS	Object)
+0x00 0x00					attribute-id-list.count = 0 (all atributes)
+0x00 0x00 					attribute-id-list.length = 0
+
+GET|RSP: MDS ALL ATTRIBUTES
+---------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x4C 					CHOICE.length = 76
+0x00 0x4A 					OCTET STRING.length = 74
+0x00 0x07					invoke-id = 0x0003
+0x02 0x03					CHOICE(Remote Operation Invoke|Get)
+0x00 0x66					CHOICE.length = 110
+0x00 0x00 					handle = 0 (MDS object)
+0x00 0x01 					attribute-list.count = 1
+0x00 0x04 					attribute-list.length = 4
+0X0A 0X5A					attribute id = MDC_ATTR_SYS_TYPE_SPEC_LIST
+0X00 0X08					attribute-value.length = 8
+0x00 0x01					TypeVerList count = 1
+0x00 0x04					TypeVerList length = 4
+0x10 0x0F 					attribute-id = MDC_DEV_SPEC_PROFILE_SCALE
+0x00 0x01 					version = version 1 of the specialization
+0X09 0X28					attribute-id = MDC_ATTR_ID_MODEL
+0x00 0x1A 					attribute-value.length = 26
+0x00 0x0A 0x54 0x68 		string length = 10 | "TheCompany"
+0x65 0x43 0x6F 0x6D
+0x70 0x61 0x6E 0x79
+0x00 0x0C 0x54 0x68 		string length = 12 | "TheScaleABC\0"
+0x65 0x53 0x63 0x61
+0x6C 0x65 0x41 0x42 0x43 0x00
+0x09 0x84 					attribute-id = MDC_ATTR_SYS_ID
+0x00 0x0A 					attribute-value.length = 10
+0x00 0x08 0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88 octet string length = 8 | EUI-64// Este valor solo lo copie.
+0x0a 0x44 					attribute-id = MDC_ATTR_DEV_CONFIG_ID
+0x00 0x02 					attribute-value.length = 2
+0x40 0x00 					dev-config-id = 16384 (extended-config-start)
+0x09 0x87					attribute-id =MDC_ATTR_TIME_ABS
+0x00 0x08					attribute-value.length = 8
+0x20 0x13 0x08 0x01				Date&Time=2013-08-01T10:30:0000
+0x10 0x30 0x00 0x00
+
+
+
+
+
+SET|REQ: MDS TIME
+-----------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x1C					CHOICE.length = 28
+0x00 0x1A 					OCTET STRING.length = 26
+0x00 0x08					invoke-id = 0x0004
+0x01 0x05					CHOICE(Remote Operation Invoke |SET)
+0x00 0x14 					CHOICE.length = 20
+0x00 0x00		    		obj-handle = 0 (MDS object)
+0x00 0x01  					modification-list.count=1				 
+0x00 0x0E					modification-list.length=14		 
+0x00 0x00					modify-operator=replace(0)			   	 
+0x09 0x87					attribute.identifier=MDC_ATTR_TIME_ABS(2439)
+0x00 0x08					attribute.size=8	
+0x20 0x13 0x10 0x23			AbsoluteTime
+0x16 0x30 0x00 0x00
+
+SET|RSP: MDS TIME
+-----------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x1A 					CHOICE.length = 26
+0x00 0x18 					OCTET STRING.length = 24
+0x00 0x08					invoke-id = 0x0004
+0x02 0x05		    		CHOICE(Remote Operation Invoke |SET)
+0x00 0x12 					CHOICE.length = 18
+0x00 0x03		    		obj-handle = 0 (MDS object)
+0x00 0x01  					attribute-list.count=1				 
+0x00 0x0C					attribute-list.length=12
+0x09 0x87					attribute.identifier=MDC_ATTR_TIME_ABS(2439)
+0x00 0x08					attribute.size=8	
+0x20 0x13 0x10 0x23			AbsoluteTime
+0x16 0x30 0x00 0x00
+
+SET|REQ: OPERATING SCANNER (OPERATIONAL STATE=OFF) 
+-----------------------------------------------
+0xE7 0x00 					Type (PrstApdu)
+0x00 0x16 					CHOICE.length = 22
+0x00 0x14 					OCTET STRING.length = 20
+0x00 0x05 					invoke-id = 0x0005
+0x01 0x05					CHOICE(Remote Operation Invoke |SET)
+0x00 0x0E 					CHOICE.length = 14
+0x00 0x03		    		obj-handle = 3 (Operating Scanner object)--Esto salio de la pagina 212
+0x00 0x01  					modification-list.count=1				 --Esto salio de la pagina 212
+0x00 0x08					modification-list.length=8				 --Esto salio de la pagina 212
+0x00 0x00					modify-operator=replace(0)			   	 --Esto salio de la pagina 
+0x09 0x53					identifier=MDC_ATTR_OP_STAT(2387)
+0x00 0x02					size=MDC_ATTR_OP_STAT(2387)
+0x00 0x00					Operational-State=disabled(0) 			 --Esto salio de la pagina 212
+
+
+SET|RSP: OPERATING SCANNER 
+--------------------------
+0xE7 0x00					APDU CHOICE Type (PrstApdu)
+0x00 0x12 					CHOICE.length = 18
+0x00 0x10 					OCTET STRING.length = 16
+0x00 0x05 					invoke-id = 0x0005
+0x02 0x05					CHOICE(Remote Operation Response |SET)	
+0x00 0x03		    		obj-handle = 3 (Operating Scanner object)--Esto salio de la pagina 212
+0x00 0x01 					attribute-list.count=1
+0x00 0x06					attribute-list.length=6
+0x09 0x53					attribute-list[0].identifier=MDC_ATTR_OP_STAT(2387)
+0x00 0x02					attribute-list[0].ANY_DEFINED_BY.size=MDC_ATTR_OP_STAT(2387)
+0x00 0x01					attribute-list[0].ANY_DEFINED_BY.Operational-State=disabled(0)
+
+
+ASSOC|REQ: RELEASE
+------------------
+0xE4 0x00					APDE CHOICE Type (RlreApdu)
+0x00 0x02					CHOICE.length =2
+0x00 0x00					reason = normal
+
+ASSOC|RSP: RELEASE
+------------------
+0xE5 0X00					APDU CHOICE Type(RleApdu)
+0x00 0x02					CHOICE.length = 2
+0x00 0x00					reason = normal
+
+
+
